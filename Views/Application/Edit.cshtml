@@ -1,0 +1,172 @@
+@model SAIS.Models.DTOs.ApplicationEditDto
+
+@{
+    ViewData["Title"] = "Edit Application";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Edit Application</h2>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left"></i> Back to List
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Application Information</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Edit" id="applicationForm">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                    <input type="hidden" asp-for="ApplicationId" />
+                    
+                    <!-- Applicant Information (Read-only) -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h6 class="text-primary border-bottom pb-2">Applicant Information</h6>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="alert alert-info">
+                                <strong>Note:</strong> This application is being edited. Changes will be saved when you submit the form.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Application Details -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h6 class="text-primary border-bottom pb-2 mt-4">Application Details</h6>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="OfficerId" class="form-label">
+                                    Officer <span class="text-danger">*</span>
+                                </label>
+                                <select asp-for="OfficerId" class="form-select" asp-items="ViewBag.OfficerId">
+                                    <option value="">-- Select Officer --</option>
+                                </select>
+                                <span asp-validation-for="OfficerId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="ApplicationDate" class="form-label">
+                                    Application Date <span class="text-danger">*</span>
+                                </label>
+                                <input asp-for="ApplicationDate" type="date" class="form-control" />
+                                <span asp-validation-for="ApplicationDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="ApplicantSignedDate" class="form-label">
+                                    Applicant Signed Date <span class="text-danger">*</span>
+                                </label>
+                                <input asp-for="ApplicantSignedDate" type="date" class="form-control" />
+                                <span asp-validation-for="ApplicantSignedDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="OfficerSignedDate" class="form-label">
+                                    Officer Signed Date <span class="text-danger">*</span>
+                                </label>
+                                <input asp-for="OfficerSignedDate" type="date" class="form-control" />
+                                <span asp-validation-for="OfficerSignedDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Programs Selection -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h6 class="text-primary border-bottom pb-2 mt-4">Programs</h6>
+                            <p class="text-muted">Select one or more social assistance programs for this application.</p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group mb-3">
+                                @if (ViewBag.Programs != null)
+                                {
+                                    <div class="row">
+                                        @foreach (var program in (ViewBag.Programs as List<SAIS.Models.SocialAssistanceProgram>)!)
+                                            {
+                                                    var isSelected = Model.ProgramIds.Contains(program.ProgramId);
+                                            
+                                                    <div class="col-md-6 col-lg-4 mb-2">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" 
+                                                                   name="ProgramIds" value="@program.ProgramId" 
+                                                                   id="program_@program.ProgramId" @(isSelected ? "checked" : "")>
+                                                            <label class="form-check-label" for="program_@program.ProgramId">
+                                                                @program.ProgramName
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                            }
+                                        </div>
+                                }
+                                <span class="text-danger" id="programsError"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Update Application
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    
+        <script>
+            $(document).ready(function() {
+                // Form validation
+                $('#applicationForm').submit(function(e) {
+                    var isValid = true;
+                
+                    // Check if at least one program is selected
+                    var selectedPrograms = $('input[name="selectedPrograms"]:checked');
+                    if (selectedPrograms.length === 0) {
+                        $('#programsError').text('Please select at least one program.');
+                        isValid = false;
+                    } else {
+                        $('#programsError').text('');
+                    }
+                
+                    if (!isValid) {
+                        e.preventDefault();
+                    }
+                });
+
+                // Clear program error when a program is selected
+                $('input[name="selectedPrograms"]').change(function() {
+                    $('#programsError').text('');
+                });
+            });
+        </script>
+}

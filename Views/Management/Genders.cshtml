@@ -1,0 +1,90 @@
+@model IEnumerable<SAIS.Models.DTOs.GenderCategoryDto>
+
+@{
+    ViewData["Title"] = "Manage Gender Categories";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-venus-mars text-info"></i> Manage Gender Categories</h2>
+                <a href="@Url.Action("CreateGender")" class="btn btn-info">
+                    <i class="fas fa-plus"></i> Add New Gender
+                </a>
+            </div>
+
+            <!-- Success/Error Messages -->
+            @if (TempData["SuccessMessage"] != null)
+            {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle"></i> @TempData["SuccessMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+            }
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle"></i> @TempData["ErrorMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+            }
+
+            <!-- Gender Categories Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-list"></i> Gender Categories List</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Any())
+                    {
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Gender Name</th>
+                                            <th width="150">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var gender in Model)
+                                        {
+                                                <tr>
+                                                    <td>
+                                                        <strong>@gender.GenderName</strong>
+                                                    </td>
+                                                    <td>
+                                                        <div class="btn-group" role="group">
+                                                            <a href="@Url.Action("EditGender", new { id = gender.GenderCategoryId })" 
+                                                               class="btn btn-sm btn-outline-primary" title="Edit">
+                                                                <i class="fas fa-edit"></i>
+                                                            </a>
+                                                            <a href="@Url.Action("DeleteGender", new { id = gender.GenderCategoryId })" 
+                                                               class="btn btn-sm btn-outline-danger" title="Delete">
+                                                                <i class="fas fa-trash"></i>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                    }
+                    else
+                    {
+                            <div class="text-center py-5">
+                                <i class="fas fa-venus-mars fa-3x text-muted mb-3"></i>
+                                <h5 class="text-muted">No Gender Categories Found</h5>
+                                <p class="text-muted">Start by adding your first gender category.</p>
+                                <a href="@Url.Action("CreateGender")" class="btn btn-info">
+                                    <i class="fas fa-plus"></i> Add First Gender
+                                </a>
+                            </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

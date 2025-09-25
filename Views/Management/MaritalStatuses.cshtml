@@ -1,0 +1,90 @@
+@model IEnumerable<SAIS.Models.DTOs.MaritalStatusDto>
+
+@{
+    ViewData["Title"] = "Manage Marital Statuses";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-heart text-warning"></i> Manage Marital Statuses</h2>
+                <a href="@Url.Action("CreateMaritalStatus")" class="btn btn-warning">
+                    <i class="fas fa-plus"></i> Add New Marital Status
+                </a>
+            </div>
+
+            <!-- Success/Error Messages -->
+            @if (TempData["SuccessMessage"] != null)
+            {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle"></i> @TempData["SuccessMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+            }
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle"></i> @TempData["ErrorMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+            }
+
+            <!-- Marital Statuses Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-list"></i> Marital Statuses List</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Any())
+                    {
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Marital Status Name</th>
+                                            <th width="150">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var maritalStatus in Model)
+                                        {
+                                                <tr>
+                                                    <td>
+                                                        <strong>@maritalStatus.MaritalStatusName</strong>
+                                                    </td>
+                                                    <td>
+                                                        <div class="btn-group" role="group">
+                                                            <a href="@Url.Action("EditMaritalStatus", new { id = maritalStatus.MaritalStatusId })" 
+                                                               class="btn btn-sm btn-outline-primary" title="Edit">
+                                                                <i class="fas fa-edit"></i>
+                                                            </a>
+                                                            <a href="@Url.Action("DeleteMaritalStatus", new { id = maritalStatus.MaritalStatusId })" 
+                                                               class="btn btn-sm btn-outline-danger" title="Delete">
+                                                                <i class="fas fa-trash"></i>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                    }
+                    else
+                    {
+                            <div class="text-center py-5">
+                                <i class="fas fa-heart fa-3x text-muted mb-3"></i>
+                                <h5 class="text-muted">No Marital Statuses Found</h5>
+                                <p class="text-muted">Start by adding your first marital status.</p>
+                                <a href="@Url.Action("CreateMaritalStatus")" class="btn btn-warning">
+                                    <i class="fas fa-plus"></i> Add First Marital Status
+                                </a>
+                            </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

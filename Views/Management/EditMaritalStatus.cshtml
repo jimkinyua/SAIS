@@ -1,0 +1,57 @@
+@model SAIS.Models.DTOs.MaritalStatusEditDto
+
+@{
+    ViewData["Title"] = "Edit Marital Status";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-edit text-warning"></i> Edit Marital Status</h2>
+                <a href="@Url.Action("MaritalStatuses")" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Marital Statuses
+                </a>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-heart"></i> Marital Status Information</h5>
+                        </div>
+                        <div class="card-body">
+                            <form asp-action="EditMaritalStatus" method="post">
+                                <input asp-for="MaritalStatusId" type="hidden" />
+                                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                                <div class="mb-3">
+                                    <label asp-for="MaritalStatusName" class="form-label">
+                                        Marital Status Name <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="MaritalStatusName" class="form-control" placeholder="Enter marital status (e.g., Single, Married, Divorced, Widowed)" />
+                                    <span asp-validation-for="MaritalStatusName" class="text-danger"></span>
+                                </div>
+
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <a href="@Url.Action("MaritalStatuses")" class="btn btn-secondary me-md-2">
+                                        <i class="fas fa-times"></i> Cancel
+                                    </a>
+                                    <button type="submit" class="btn btn-warning">
+                                        <i class="fas fa-save"></i> Update Marital Status
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

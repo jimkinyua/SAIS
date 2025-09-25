@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SAIS</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/SAIS.styles.css" asp-append-version="true" />
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container-fluid">
+                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-hand-holding-heart me-2"></i>SAIS
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
+                                <i class="fas fa-home me-1"></i>Home
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="applicantsDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-users me-1"></i>Applicants
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="applicantsDropdown">
+                                <li><a class="dropdown-item" asp-controller="Applicant" asp-action="Index">
+                                        <i class="fas fa-list me-2"></i>View All
+                                    </a></li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="RegisterAndApply" asp-action="Create">
+                                        <i class="fas fa-plus me-2"></i>Add New Applicant
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="applicationsDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-file-alt me-1"></i>Applications
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="applicationsDropdown">
+                                <li><a class="dropdown-item" asp-controller="Application" asp-action="Index">
+                                        <i class="fas fa-list me-2"></i>View All
+                                    </a></li>
+                                <li><a class="dropdown-item" asp-controller="Application" asp-action="Create">
+                                        <i class="fas fa-plus me-2"></i>New Application
+                                    </a></li>
+                                <li><a class="dropdown-item" asp-controller="Application" asp-action="NewApplication">
+                                        <i class="fas fa-bolt me-2"></i>Quick Application
+                                    </a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="managementDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-cogs me-1"></i>Management
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="managementDropdown">
+                                <li>
+                                    <h6 class="dropdown-header">System Management</h6>
+                                </li>
+                                <li><a class="dropdown-item" asp-controller="Management" asp-action="Index">
+                                        <i class="fas fa-cogs me-2"></i>Management Dashboard
+                                    </a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <h6 class="dropdown-header">Geographic Management</h6>
+                                </li>
+                                <li><a class="dropdown-item" asp-controller="Management" asp-action="Counties">
+                                        <i class="fas fa-map-marker-alt me-2"></i>Counties
+                                    </a></li>
+                                @* <li><a class="dropdown-item" asp-controller="Management" asp-action="SubCounties">
+                                        <i class="fas fa-map-marked-alt me-2"></i>Sub-Counties
+                                    </a></li>
+                                <li><a class="dropdown-item" asp-controller="Management" asp-action="Locations">
+                                        <i class="fas fa-map-pin me-2"></i>Locations
+                                    </a></li>
+                                <li><a class="dropdown-item" asp-controller="Management" asp-action="SubLocations">
+                                        <i class="fas fa-location-dot me-2"></i>Sub-Locations
+                                    </a></li>
+                                <li><a class="dropdown-item" asp-controller="Management" asp-action="Villages">
+                                        <i class="fas fa-home me-2"></i>Villages
+                                    </a></li>
+                                <li> *@
+                                <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <h6 class="dropdown-header">Lookup Data</h6>
+                        </li>
+                        <li><a class="dropdown-item" asp-controller="Management" asp-action="Genders">
+                                <i class="fas fa-venus-mars me-2"></i>Gender Categories
+                            </a></li>
+                        <li><a class="dropdown-item" asp-controller="Management" asp-action="MaritalStatuses">
+                                <i class="fas fa-heart me-2"></i>Marital Statuses
+                            </a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <h6 class="dropdown-header">System Entities</h6>
+                        </li>
+                        <li><a class="dropdown-item" asp-controller="Officer" asp-action="Index">
+                                <i class="fas fa-user-tie me-2"></i>Officers
+                            </a></li>
+                        <li><a class="dropdown-item" asp-controller="SocialAssistanceProgram" asp-action="Index">
+                                <i class="fas fa-hand-holding-heart me-2"></i>Programs
+                            </a></li>
+                    </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="reportsDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-chart-bar me-1"></i>Reports
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="reportsDropdown">
+                            <li><a class="dropdown-item" asp-controller="Reports" asp-action="Index">
+                                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                                </a></li>
+                            <li><a class="dropdown-item" asp-controller="Reports" asp-action="Applications">
+                                    <i class="fas fa-list me-2"></i>Applications Report
+                                </a></li>
+                        </ul>
+                    </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3" style="margin-top: 2rem;">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2025 - SAIS - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>

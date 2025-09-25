@@ -1,0 +1,445 @@
+@model SAIS.Models.DTOs.ApplicantCreateDto
+
+@{
+    ViewData["Title"] = "Create Applicant";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Create New Applicant</h2>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left"></i> Back to List
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Applicant Information</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" id="applicantForm">
+                    <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
+
+                    <!-- Personal Information -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h6 class="text-primary border-bottom pb-2">Personal Information</h6>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label asp-for="IdNumber" class="form-label">
+                                    ID Number <span class="text-danger">*</span>
+                                </label>
+                                <input asp-for="IdNumber" class="form-control" autofocus />
+                                <span asp-validation-for="IdNumber" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label asp-for="FirstName" class="form-label">
+                                    First Name <span class="text-danger">*</span>
+                                </label>
+                                <input asp-for="FirstName" class="form-control" />
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label asp-for="MiddleName" class="form-label">Middle Name</label>
+                                <input asp-for="MiddleName" class="form-control" />
+                                <span asp-validation-for="MiddleName" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label asp-for="LastName" class="form-label">
+                                    Last Name <span class="text-danger">*</span>
+                                </label>
+                                <input asp-for="LastName" class="form-control" />
+                                <span asp-validation-for="LastName" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label asp-for="DateOfBirth" class="form-label">Date of Birth</label>
+                                <input asp-for="DateOfBirth" type="date" class="form-control" />
+                                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                                <label asp-for="Age" class="form-label">Age</label>
+                                <input asp-for="Age" type="number" class="form-control" min="0" max="150" />
+                                <span asp-validation-for="Age" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="GenderId" class="form-label">
+                                    Gender <span class="text-danger">*</span>
+                                </label>
+                                <select asp-for="GenderId" class="form-select" asp-items="ViewBag.GenderId">
+                                    <option value="">-- Select Gender --</option>
+                                </select>
+                                <span asp-validation-for="GenderId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="MaritalStatusId" class="form-label">
+                                    Marital Status <span class="text-danger">*</span>
+                                </label>
+                                <select asp-for="MaritalStatusId" class="form-select"
+                                    asp-items="ViewBag.MaritalStatusId">
+                                    <option value="">-- Select Marital Status --</option>
+                                </select>
+                                <span asp-validation-for="MaritalStatusId" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Geographic Information -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h6 class="text-primary border-bottom pb-2 mt-4">Geographic Information</h6>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="CountyId" class="form-label">
+                                    County <span class="text-danger">*</span>
+                                </label>
+                                <select id="CountyId" class="form-select">
+                                    <option value="">-- Select County --</option>
+                                </select>
+                                <span class="text-danger" id="countyError"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="SubCountyId" class="form-label">
+                                    Sub County <span class="text-danger">*</span>
+                                </label>
+                                <select id="SubCountyId" class="form-select" disabled>
+                                    <option value="">-- Select Sub County --</option>
+                                </select>
+                                <span class="text-danger" id="subCountyError"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="LocationId" class="form-label">
+                                    Location <span class="text-danger">*</span>
+                                </label>
+                                <select id="LocationId" class="form-select" disabled>
+                                    <option value="">-- Select Location --</option>
+                                </select>
+                                <span class="text-danger" id="locationError"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="SubLocationId" class="form-label">
+                                    Sub Location <span class="text-danger">*</span>
+                                </label>
+                                <select id="SubLocationId" class="form-select" disabled>
+                                    <option value="">-- Select Sub Location --</option>
+                                </select>
+                                <span class="text-danger" id="subLocationError"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="VillageId" class="form-label">
+                                    Village <span class="text-danger">*</span>
+                                </label>
+                                <select asp-for="VillageId" class="form-select" disabled>
+                                    <option value="">-- Select Village --</option>
+                                </select>
+                                <span asp-validation-for="VillageId" class="text-danger"></span>
+                                <span class="text-danger" id="villageError"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Address Information -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h6 class="text-primary border-bottom pb-2 mt-4">Address Information</h6>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="PostalAddress" class="form-label">Postal Address</label>
+                                <textarea asp-for="PostalAddress" class="form-control" rows="3"></textarea>
+                                <span asp-validation-for="PostalAddress" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="PhysicalAddress" class="form-label">Physical Address</label>
+                                <textarea asp-for="PhysicalAddress" class="form-control" rows="3"></textarea>
+                                <span asp-validation-for="PhysicalAddress" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phone Numbers -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h6 class="text-primary border-bottom pb-2 mt-4">Phone Numbers</h6>
+                        </div>
+                    </div>
+
+                    <div id="phoneNumbersContainer">
+                        <div class="row phone-number-row mb-2">
+                            <div class="col-md-10">
+                                <input type="text" name="phoneNumbers" class="form-control"
+                                    placeholder="Enter phone number" />
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-outline-danger remove-phone"
+                                    style="display: none;">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <span class="text-danger" id="phoneNumbersError"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <button type="button" id="addPhoneNumber" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-plus"></i> Add Phone Number
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Create Applicant
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function () {
+            // Load counties on page load
+            loadCounties();
+
+            // Cascading dropdowns
+            $('#CountyId').change(function () {
+                var countyId = $(this).val();
+                $('#countyError').text('');
+                $(this).removeClass('is-invalid');
+                if (countyId) {
+                    loadSubCounties(countyId);
+                } else {
+                    resetDropdowns(['SubCountyId', 'LocationId', 'SubLocationId', 'VillageId']);
+                }
+            });
+
+            $('#SubCountyId').change(function () {
+                var subCountyId = $(this).val();
+                $('#subCountyError').text('');
+                $(this).removeClass('is-invalid');
+                if (subCountyId) {
+                    loadLocations(subCountyId);
+                } else {
+                    resetDropdowns(['LocationId', 'SubLocationId', 'VillageId']);
+                }
+            });
+
+            $('#LocationId').change(function () {
+                var locationId = $(this).val();
+                $('#locationError').text('');
+                $(this).removeClass('is-invalid');
+                if (locationId) {
+                    loadSubLocations(locationId);
+                } else {
+                    resetDropdowns(['SubLocationId', 'VillageId']);
+                }
+            });
+
+            $('#SubLocationId').change(function () {
+                var subLocationId = $(this).val();
+                $('#subLocationError').text('');
+                $(this).removeClass('is-invalid');
+                if (subLocationId) {
+                    loadVillages(subLocationId);
+                } else {
+                    resetDropdowns(['VillageId']);
+                }
+            });
+
+            // Village dropdown change
+            $('#VillageId').change(function () {
+                $('#villageError').text('');
+                $(this).removeClass('is-invalid');
+            });
+
+            // Phone number management
+            $('#addPhoneNumber').click(function () {
+                addPhoneNumberRow();
+            });
+
+            $(document).on('click', '.remove-phone', function () {
+                $(this).closest('.phone-number-row').remove();
+                updatePhoneNumberButtons();
+            });
+
+            // Clear phone number errors when typing
+            $(document).on('input', 'input[name="phoneNumbers"]', function () {
+                $('#phoneNumbersError').text('');
+            });
+
+            // Form validation - simplified to avoid conflicts with server-side validation
+            $('#applicantForm').submit(function (e) {
+                // Debug: Log form values
+                console.log('Form submission values:');
+                console.log('GenderId:', $('#GenderId').val());
+                console.log('MaritalStatusId:', $('#MaritalStatusId').val());
+                console.log('VillageId:', $('#VillageId').val());
+
+                // Only check phone numbers client-side as it's not model-bound
+                var phoneNumbers = $('input[name="phoneNumbers"]').filter(function () {
+                    return $(this).val().trim() !== '';
+                });
+
+                if (phoneNumbers.length === 0) {
+                    e.preventDefault();
+                    $('#phoneNumbersError').text('At least one phone number is required.');
+                    $('html, body').animate({
+                        scrollTop: $('#phoneNumbersError').offset().top - 100
+                    }, 500);
+                }
+            });
+        });
+
+        function clearValidationErrors() {
+            $('.text-danger').text('');
+            $('.form-control, .form-select').removeClass('is-invalid');
+        }
+
+        function showFieldError(fieldId, message) {
+            $('#' + fieldId).addClass('is-invalid');
+            $('#' + fieldId).next('.text-danger').text(message);
+        }
+
+        function loadCounties() {
+            $.get('@Url.Action("GetCounties", "Applicant")', function (data) {
+                var options = '<option value="">-- Select County --</option>';
+                $.each(data, function (index, item) {
+                    options += '<option value="' + item.countyId + '">' + item.countyName + '</option>';
+                });
+                $('#CountyId').html(options);
+            });
+        }
+
+        function loadSubCounties(countyId) {
+            $.get('@Url.Action("GetSubCounties", "Applicant")', { countyId: countyId }, function (data) {
+                var options = '<option value="">-- Select Sub County --</option>';
+                $.each(data, function (index, item) {
+                    options += '<option value="' + item.subCountyId + '">' + item.subCountyName + '</option>';
+                });
+                $('#SubCountyId').html(options).prop('disabled', false);
+            });
+        }
+
+        function loadLocations(subCountyId) {
+            $.get('@Url.Action("GetLocations", "Applicant")', { subCountyId: subCountyId }, function (data) {
+                var options = '<option value="">-- Select Location --</option>';
+                $.each(data, function (index, item) {
+                    options += '<option value="' + item.locationId + '">' + item.locationName + '</option>';
+                });
+                $('#LocationId').html(options).prop('disabled', false);
+            });
+        }
+
+        function loadSubLocations(locationId) {
+            $.get('@Url.Action("GetSubLocations", "Applicant")', { locationId: locationId }, function (data) {
+                var options = '<option value="">-- Select Sub Location --</option>';
+                $.each(data, function (index, item) {
+                    options += '<option value="' + item.subLocationId + '">' + item.subLocationName + '</option>';
+                });
+                $('#SubLocationId').html(options).prop('disabled', false);
+            });
+        }
+
+        function loadVillages(subLocationId) {
+            $.get('@Url.Action("GetVillages", "Applicant")', { subLocationId: subLocationId }, function (data) {
+                var options = '<option value="">-- Select Village --</option>';
+                $.each(data, function (index, item) {
+                    options += '<option value="' + item.villageId + '">' + item.villageName + '</option>';
+                });
+                $('#VillageId').html(options).prop('disabled', false);
+            });
+        }
+
+        function resetDropdowns(dropdownIds) {
+            $.each(dropdownIds, function (index, id) {
+                $('#' + id).html('<option value="">-- Select ' + id.replace('Id', '') + ' --</option>').prop('disabled', true);
+            });
+        }
+
+        function addPhoneNumberRow() {
+            var row = '<div class="row phone-number-row mb-2">' +
+                '<div class="col-md-10">' +
+                '<input type="text" name="phoneNumbers" class="form-control" placeholder="Enter phone number" />' +
+                '</div>' +
+                '<div class="col-md-2">' +
+                '<button type="button" class="btn btn-outline-danger remove-phone">' +
+                '<i class="fas fa-trash"></i>' +
+                '</button>' +
+                '</div>' +
+                '</div>';
+            $('#phoneNumbersContainer').append(row);
+            updatePhoneNumberButtons();
+        }
+
+        function updatePhoneNumberButtons() {
+            var phoneRows = $('.phone-number-row');
+            if (phoneRows.length > 1) {
+                $('.remove-phone').show();
+            } else {
+                $('.remove-phone').hide();
+            }
+        }
+    </script>
+}

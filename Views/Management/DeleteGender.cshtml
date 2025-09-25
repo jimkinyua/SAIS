@@ -1,0 +1,54 @@
+@model SAIS.Models.DTOs.GenderCategoryDto
+
+@{
+    ViewData["Title"] = "Delete Gender Category";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-trash text-danger"></i> Delete Gender Category</h2>
+                <a href="@Url.Action("Genders")" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Gender Categories
+                </a>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6">
+                    <div class="card border-danger">
+                        <div class="card-header bg-danger text-white">
+                            <h5 class="mb-0"><i class="fas fa-exclamation-triangle"></i> Confirm Deletion</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-warning" role="alert">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <strong>Warning!</strong> This action cannot be undone. Deleting this gender category may affect existing applicants.
+                            </div>
+
+                            <h6>Gender Category Details:</h6>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td><strong>Gender Name:</strong></td>
+                                    <td>@Model.GenderName</td>
+                                </tr>
+                            </table>
+
+                            <form asp-action="DeleteGenderConfirmed" method="post" class="d-inline">
+                                <input asp-for="GenderCategoryId" type="hidden" />
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <a href="@Url.Action("Genders")" class="btn btn-secondary me-md-2">
+                                        <i class="fas fa-times"></i> Cancel
+                                    </a>
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="fas fa-trash"></i> Delete Gender Category
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

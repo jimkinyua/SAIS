@@ -1,0 +1,99 @@
+@model SAIS.Models.Officer
+
+@{
+    ViewData["Title"] = "Delete Officer";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-danger">Delete Officer</h2>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left"></i> Back to List
+    </a>
+</div>
+
+<div class="alert alert-warning" role="alert">
+    <i class="fas fa-exclamation-triangle"></i>
+    <strong>Warning!</strong> Are you sure you want to delete this officer? This action cannot be undone.
+    @if (Model.Applications.Any())
+    {
+        <br>
+    
+        <br>
+        <text>This officer has @Model.Applications.Count application(s) associated with them. Deleting this officer will
+            also remove all associated applications.</text>
+    }
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Officer Information</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-3">Officer Name:</dt>
+                    <dd class="col-sm-9"><strong>@Html.DisplayFor(model => model.OfficerName)</strong></dd>
+
+                    <dt class="col-sm-3">Designation:</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.Designation)</dd>
+
+                    <dt class="col-sm-3">Total Applications:</dt>
+                    <dd class="col-sm-9">
+                        <span class="badge bg-primary fs-6">@Model.Applications.Count</span>
+                    </dd>
+                </dl>
+
+                @if (Model.Applications.Any())
+                {
+                    <hr>
+                    <h6 class="text-danger">Associated Applications</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Application Date</th>
+                                    <th>Applicant</th>
+                                    <th>Programs</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var application in Model.Applications.Take(10))
+                                {
+                                    <tr>
+                                        <td>@application.ApplicationDate.ToString("dd/MM/yyyy")</td>
+                                        <td>@application.Applicant.FirstName @application.Applicant.LastName</td>
+                                        <td>
+                                            @string.Join(", ", application.AppliedPrograms.Select(ap =>
+                                            ap.SocialAssistanceProgram.ProgramName))
+                                </td>
+                            </tr>
+                                                        }
+                                @if (Model.Applications.Count > 10)
+                                {
+                                    <tr>
+                                        <td colspan="3" class="text-center text-muted">
+                                            ... and @(Model.Applications.Count - 10) more applications
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <form asp-action="Delete" class="mt-4">
+            <input type="hidden" asp-for="OfficerId" />
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Delete Officer
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

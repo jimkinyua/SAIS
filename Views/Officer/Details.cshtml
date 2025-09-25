@@ -1,0 +1,100 @@
+@model SAIS.Models.Officer
+
+@{
+    ViewData["Title"] = "Officer Details";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Officer Details</h2>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.OfficerId" class="btn btn-warning">
+            <i class="fas fa-edit"></i> Edit
+        </a>
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Back to List
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Officer Information</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-3">Officer Name:</dt>
+                    <dd class="col-sm-9"><strong>@Html.DisplayFor(model => model.OfficerName)</strong></dd>
+                    
+                    <dt class="col-sm-3">Designation:</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.Designation)</dd>
+                    
+                    <dt class="col-sm-3">Total Applications:</dt>
+                    <dd class="col-sm-9">
+                        <span class="badge bg-primary fs-6">@Model.Applications.Count</span>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+
+        @if (Model.Applications.Any())
+        {
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Applications Handled</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Application Date</th>
+                                        <th>Applicant</th>
+                                        <th>ID Number</th>
+                                        <th>Programs</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var application in Model.Applications.OrderByDescending(a => a.ApplicationDate))
+                                    {
+                                            <tr>
+                                                <td>@application.ApplicationDate.ToString("dd/MM/yyyy")</td>
+                                                <td>@application.Applicant.FirstName @application.Applicant.LastName</td>
+                                                <td><code>@application.Applicant.IdNumber</code></td>
+                                                <td>
+                                                    @if (application.AppliedPrograms.Any())
+                                                    {
+                                                            <div class="d-flex flex-wrap gap-1">
+                                                                @foreach (var program in application.AppliedPrograms)
+                                                                {
+                                                                        <span class="badge bg-secondary">@program.SocialAssistanceProgram.ProgramName</span>
+                                                                }
+                                                            </div>
+                                                    }
+                                                    else
+                                                    {
+                                                            <span class="text-muted">No programs</span>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    @if (application.OfficerSignedDate != default(DateTime))
+                                                    {
+                                                            <span class="badge bg-success">Completed</span>
+                                                    }
+                                                    else
+                                                    {
+                                                            <span class="badge bg-warning">Pending</span>
+                                                    }
+                                                </td>
+                                            </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,230 @@
+@model SAIS.Models.DTOs.ApplicationCreateDto
+
+@{
+    ViewData["Title"] = "Create Application";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Create New Application</h2>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left"></i> Back to List
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Application Information</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" id="applicationForm">
+                    <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
+
+                    <!-- Applicant Selection -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h6 class="text-primary border-bottom pb-2">Applicant Selection</h6>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group mb-3">
+                                <label asp-for="ApplicantId" class="form-label">
+                                    Applicant <span class="text-danger">*</span>
+                                </label>
+                                <select asp-for="ApplicantId" class="form-select" asp-items="ViewBag.ApplicantId"
+                                    id="applicantSelect">
+                                    <option value="">-- Select Applicant --</option>
+                                </select>
+                                <span asp-validation-for="ApplicantId" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Existing Applications Info -->
+                    <div class="row" id="existingApplicationsInfo" style="display: none;">
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                <h6 class="alert-heading">
+                                    <i class="fas fa-info-circle"></i> Existing Applications
+                                </h6>
+                                <div id="existingApplicationsList">
+                                    <!-- This will be populated by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Application Details -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h6 class="text-primary border-bottom pb-2 mt-4">Application Details</h6>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="OfficerId" class="form-label">
+                                    Officer <span class="text-danger">*</span>
+                                </label>
+                                <select asp-for="OfficerId" class="form-select" asp-items="ViewBag.OfficerId">
+                                    <option value="">-- Select Officer --</option>
+                                </select>
+                                <span asp-validation-for="OfficerId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="ApplicationDate" class="form-label">
+                                    Application Date <span class="text-danger">*</span>
+                                </label>
+                                <input asp-for="ApplicationDate" type="date" class="form-control" />
+                                <span asp-validation-for="ApplicationDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="ApplicantSignedDate" class="form-label">
+                                    Applicant Signed Date <span class="text-danger">*</span>
+                                </label>
+                                <input asp-for="ApplicantSignedDate" type="date" class="form-control" />
+                                <span asp-validation-for="ApplicantSignedDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="OfficerSignedDate" class="form-label">
+                                    Officer Signed Date <span class="text-danger">*</span>
+                                </label>
+                                <input asp-for="OfficerSignedDate" type="date" class="form-control" />
+                                <span asp-validation-for="OfficerSignedDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Programs Selection -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h6 class="text-primary border-bottom pb-2 mt-4">Programs</h6>
+                            <p class="text-muted">Select one or more social assistance programs for this application.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group mb-3">
+                                @if (ViewBag.Programs != null)
+                                {
+                                    <div class="row">
+                                        @foreach (var program in (ViewBag.Programs as
+                                                                            List<SAIS.Models.SocialAssistanceProgram>)!)
+                                        {
+                                            <div class="col-md-6 col-lg-4 mb-2">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="ProgramIds"
+                                                        value="@program.ProgramId" id="program_@program.ProgramId"
+                                                        @(Model.ProgramIds.Contains(program.ProgramId) ? "checked" : "")>
+                                                    <label class="form-check-label" for="program_@program.ProgramId">
+                                                        @program.ProgramName
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                                <span class="text-danger" id="programsError"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Create Application
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function () {
+            // Set default application date to today
+            var today = new Date().toISOString().split('T')[0];
+            $('#ApplicationDate').val(today);
+
+            // Form validation
+            $('#applicationForm').submit(function (e) {
+                var isValid = true;
+
+                // Check if at least one program is selected
+                var selectedPrograms = $('input[name="ProgramIds"]:checked');
+                if (selectedPrograms.length === 0) {
+                    $('#programsError').text('Please select at least one program.');
+                    isValid = false;
+                } else {
+                    $('#programsError').text('');
+                }
+
+                if (!isValid) {
+                    e.preventDefault();
+                }
+            });
+
+            // Clear program error when a program is selected
+            $('input[name="ProgramIds"]').change(function () {
+                $('#programsError').text('');
+            });
+
+            // Load existing applications when applicant is selected
+            $('#applicantSelect').change(function () {
+                var applicantId = $(this).val();
+                if (applicantId && applicantId !== '') {
+                    loadExistingApplications(applicantId);
+                } else {
+                    $('#existingApplicationsInfo').hide();
+                }
+            });
+
+            function loadExistingApplications(applicantId) {
+                $.ajax({
+                    url: '@Url.Action("GetExistingApplications", "Application")',
+                    type: 'GET',
+                    data: { applicantId: applicantId },
+                    success: function (data) {
+                        if (data && data.length > 0) {
+                            var html = '<ul class="mb-0">';
+                            data.forEach(function (app) {
+                                html += '<li><strong>' + app.programName + '</strong> - Application #' + app.applicationId + ' (' + app.applicationDate + ')</li>';
+                            });
+                            html += '</ul>';
+                            $('#existingApplicationsList').html(html);
+                            $('#existingApplicationsInfo').show();
+                        } else {
+                            $('#existingApplicationsInfo').hide();
+                        }
+                    },
+                    error: function () {
+                        $('#existingApplicationsInfo').hide();
+                    }
+                });
+            }
+        });
+    </script>
+}

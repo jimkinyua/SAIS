@@ -1,0 +1,157 @@
+@model SAIS.Models.DTOs.ApplicantDto
+
+@{
+    ViewData["Title"] = "Delete Applicant";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-danger">Delete Applicant</h2>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left"></i> Back to List
+    </a>
+</div>
+
+<div class="alert alert-warning" role="alert">
+    <i class="fas fa-exclamation-triangle"></i>
+    <strong>Warning!</strong> Are you sure you want to delete this applicant? This action cannot be undone.
+    @if (Model.Applications.Any())
+    {
+        <br>
+
+        <br>
+        <text>This applicant has @Model.Applications.Count application(s) associated with them. Deleting this applicant will
+            also remove all associated applications.</text>
+    }
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Applicant Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <dl class="row">
+                            <dt class="col-sm-4">ID Number:</dt>
+                            <dd class="col-sm-8"><strong>@Html.DisplayFor(model => model.IdNumber)</strong></dd>
+
+                            <dt class="col-sm-4">Name:</dt>
+                            <dd class="col-sm-8">
+                                @Html.DisplayFor(model => model.FirstName)
+                                @Html.DisplayFor(model => model.MiddleName)
+                                @Html.DisplayFor(model => model.LastName)
+                            </dd>
+
+                            <dt class="col-sm-4">Date of Birth:</dt>
+                            <dd class="col-sm-8">@Html.DisplayFor(model => model.DateOfBirth)</dd>
+
+                            <dt class="col-sm-4">Age:</dt>
+                            <dd class="col-sm-8">@Html.DisplayFor(model => model.Age)</dd>
+                        </dl>
+                    </div>
+                    <div class="col-md-6">
+                        <dl class="row">
+                            <dt class="col-sm-4">Gender:</dt>
+                            <dd class="col-sm-8">@Html.DisplayFor(model => model.GenderName)</dd>
+
+                            <dt class="col-sm-4">Marital Status:</dt>
+                            <dd class="col-sm-8">@Html.DisplayFor(model => model.MaritalStatusName)</dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <hr>
+
+                <dl class="row">
+                    <dt class="col-sm-3">Address:</dt>
+                    <dd class="col-sm-9">
+                        @Html.DisplayFor(model => model.VillageName),
+                        @Html.DisplayFor(model => model.SubLocationName),
+                        @Html.DisplayFor(model => model.LocationName),
+                        @Html.DisplayFor(model => model.SubCountyName),
+                        @Html.DisplayFor(model => model.CountyName)
+                    </dd>
+
+                    <dt class="col-sm-3">Postal Address:</dt>
+                    <dd class="col-sm-9">
+                        @if (!string.IsNullOrEmpty(Model.PostalAddress))
+                        {
+                            @Html.DisplayFor(model => model.PostalAddress)
+                        }
+                        else
+                        {
+                            <span class="text-muted">Not provided</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-3">Physical Address:</dt>
+                    <dd class="col-sm-9">
+                        @if (!string.IsNullOrEmpty(Model.PhysicalAddress))
+                        {
+                            @Html.DisplayFor(model => model.PhysicalAddress)
+                        }
+                        else
+                        {
+                            <span class="text-muted">Not provided</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-3">Phone Numbers:</dt>
+                    <dd class="col-sm-9">
+                        @if (Model.PhoneNumbers.Any())
+                        {
+                            @string.Join(", ", Model.PhoneNumbers)
+                        }
+                        else
+                        {
+                            <span class="text-muted">No phone numbers</span>
+                        }
+                    </dd>
+                </dl>
+
+                @if (Model.Applications.Any())
+                {
+                    <hr>
+                    <h6 class="text-danger">Associated Applications</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Application Date</th>
+                                    <th>Officer</th>
+                                    <th>Programs</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var application in Model.Applications)
+                                {
+                                    <tr>
+                                        <td>@application.ApplicationDate.ToString("dd/MM/yyyy")</td>
+                                        <td>@application.OfficerName</td>
+                                        <td>
+                                            @application.ProgramNames
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <form asp-action="Delete" class="mt-4">
+            <input type="hidden" asp-for="ApplicantId" />
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Delete Applicant
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

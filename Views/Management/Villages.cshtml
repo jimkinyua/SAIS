@@ -1,0 +1,94 @@
+@model IEnumerable<SAIS.Models.DTOs.VillageDto>
+
+@{
+    ViewData["Title"] = "Manage Villages";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-home text-success"></i> Manage Villages</h2>
+                <a href="@Url.Action("CreateVillage")" class="btn btn-success">
+                    <i class="fas fa-plus"></i> Add New Village
+                </a>
+            </div>
+
+            <!-- Success/Error Messages -->
+            @if (TempData["SuccessMessage"] != null)
+            {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle"></i> @TempData["SuccessMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+            }
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle"></i> @TempData["ErrorMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+            }
+
+            <!-- Villages Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-list"></i> Villages List</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Any())
+                    {
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Village Name</th>
+                                            <th>Sub-County</th>
+                                            <th>County</th>
+                                            <th width="150">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var village in Model)
+                                        {
+                                                <tr>
+                                                    <td>
+                                                        <strong>@village.VillageName</strong>
+                                                    </td>
+                                                    <td>@village.SubCountyName</td>
+                                                    <td>@village.CountyName</td>
+                                                    <td>
+                                                        <div class="btn-group" role="group">
+                                                            <a href="@Url.Action("EditVillage", new { id = village.VillageId })" 
+                                                               class="btn btn-sm btn-outline-primary" title="Edit">
+                                                                <i class="fas fa-edit"></i>
+                                                            </a>
+                                                            <a href="@Url.Action("DeleteVillage", new { id = village.VillageId })" 
+                                                               class="btn btn-sm btn-outline-danger" title="Delete">
+                                                                <i class="fas fa-trash"></i>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                    }
+                    else
+                    {
+                            <div class="text-center py-5">
+                                <i class="fas fa-home fa-3x text-muted mb-3"></i>
+                                <h5 class="text-muted">No Villages Found</h5>
+                                <p class="text-muted">Start by adding your first village.</p>
+                                <a href="@Url.Action("CreateVillage")" class="btn btn-success">
+                                    <i class="fas fa-plus"></i> Add First Village
+                                </a>
+                            </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

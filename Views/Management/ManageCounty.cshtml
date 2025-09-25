@@ -1,0 +1,695 @@
+@{
+    ViewData["Title"] = "Manage County";
+    var county = ViewBag.County as SAIS.Models.DTOs.CountyDto;
+    var subCounties = ViewBag.SubCounties as List<SAIS.Models.DTOs.SubCountyDto>;
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-map-marker-alt text-primary"></i> Manage @county?.CountyName</h2>
+                <a href="@Url.Action("Counties")" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Counties
+                </a>
+            </div>
+
+            <!-- County Overview Card -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-map-marker-alt"></i> County Overview</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>County Name: <strong>@county?.CountyName</strong></h6>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Sub-Counties: <span class="badge bg-info">@county?.SubCountiesCount</span></h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Management Tabs -->
+            <ul class="nav nav-tabs" id="countyTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="subcounties-tab" data-bs-toggle="tab"
+                        data-bs-target="#subcounties" type="button" role="tab">
+                        <i class="fas fa-map-marked-alt"></i> Sub-Counties
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="locations-tab" data-bs-toggle="tab" data-bs-target="#locations"
+                        type="button" role="tab">
+                        <i class="fas fa-map-pin"></i> Locations
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="sublocations-tab" data-bs-toggle="tab" data-bs-target="#sublocations"
+                        type="button" role="tab">
+                        <i class="fas fa-location-dot"></i> Sub-Locations
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="villages-tab" data-bs-toggle="tab" data-bs-target="#villages"
+                        type="button" role="tab">
+                        <i class="fas fa-home"></i> Villages
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="countyTabsContent">
+                <!-- Sub-Counties Tab -->
+                <div class="tab-pane fade show active" id="subcounties" role="tabpanel">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0"><i class="fas fa-map-marked-alt"></i> Sub-Counties in @county?.CountyName
+                            </h6>
+                            <button class="btn btn-primary btn-sm" onclick="showAddSubCountyModal()">
+                                <i class="fas fa-plus"></i> Add Sub-County
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div id="subCountiesList">
+                                <!-- This will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Locations Tab -->
+                <div class="tab-pane fade" id="locations" role="tabpanel">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0"><i class="fas fa-map-pin"></i> Locations in @county?.CountyName</h6>
+                            <button class="btn btn-primary btn-sm" onclick="showAddLocationModal()">
+                                <i class="fas fa-plus"></i> Add Location
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div id="locationsList">
+                                <!-- This will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sub-Locations Tab -->
+                <div class="tab-pane fade" id="sublocations" role="tabpanel">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0"><i class="fas fa-location-dot"></i> Sub-Locations in @county?.CountyName
+                            </h6>
+                            <button class="btn btn-primary btn-sm" onclick="showAddSubLocationModal()">
+                                <i class="fas fa-plus"></i> Add Sub-Location
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div id="subLocationsList">
+                                <!-- This will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Villages Tab -->
+                <div class="tab-pane fade" id="villages" role="tabpanel">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0"><i class="fas fa-home"></i> Villages in @county?.CountyName</h6>
+                            <button class="btn btn-primary btn-sm" onclick="showAddVillageModal()">
+                                <i class="fas fa-plus"></i> Add Village
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div id="villagesList">
+                                <!-- This will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Preloader -->
+<div id="preloader" class="preloader" style="display: none;">
+    <div class="preloader-content">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <div class="preloader-text">Processing...</div>
+    </div>
+</div>
+
+<!-- Add Sub-County Modal -->
+<div class="modal fade" id="addSubCountyModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Sub-County</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="addSubCountyForm">
+                <div class="modal-body">
+                    <input type="hidden" id="countyId" value="@county?.CountyId" />
+                    <div class="mb-3">
+                        <label for="subCountyName" class="form-label">Sub-County Name</label>
+                        <input type="text" class="form-control" id="subCountyName" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Sub-County</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Location Modal -->
+<div class="modal fade" id="addLocationModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Location</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="addLocationForm">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="locationName" class="form-label">Location Name</label>
+                        <input type="text" class="form-control" id="locationName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="subCountySelect" class="form-label">Sub-County</label>
+                        <select class="form-select" id="subCountySelect" required>
+                            <option value="">-- Select Sub-County --</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Location</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Sub-Location Modal -->
+<div class="modal fade" id="addSubLocationModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Sub-Location</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="addSubLocationForm">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="subLocationName" class="form-label">Sub-Location Name</label>
+                        <input type="text" class="form-control" id="subLocationName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="locationSelect" class="form-label">Location</label>
+                        <select class="form-select" id="locationSelect" required>
+                            <option value="">-- Select Location --</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Sub-Location</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Village Modal -->
+<div class="modal fade" id="addVillageModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Village</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="addVillageForm">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="villageName" class="form-label">Village Name</label>
+                        <input type="text" class="form-control" id="villageName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="subLocationSelect" class="form-label">Sub-Location</label>
+                        <select class="form-select" id="subLocationSelect" required>
+                            <option value="">-- Select Sub-Location --</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Village</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Preloader functions
+        function showPreloader(message = 'Processing...') {
+            $('#preloader .preloader-text').text(message);
+            $('#preloader').show();
+            $('body').addClass('preloader-active');
+        }
+
+        function hidePreloader() {
+            $('#preloader').hide();
+            $('body').removeClass('preloader-active');
+        }
+
+        function showSuccessMessage(message) {
+            // Create a temporary success alert
+            var alertHtml = `
+                        <div class="alert alert-success alert-dismissible fade show position-fixed" 
+                             style="top: 20px; right: 20px; z-index: 10000; min-width: 300px;" role="alert">
+                            <i class="fas fa-check-circle me-2"></i>${message}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    `;
+            $('body').append(alertHtml);
+
+            // Auto-remove after 3 seconds
+            setTimeout(function () {
+                $('.alert-success').fadeOut();
+            }, 3000);
+        }
+
+        $(document).ready(function () {
+            loadSubCounties();
+            loadLocations();
+            loadSubLocations();
+            loadVillages();
+        });
+
+        function loadSubCounties() {
+            showPreloader('Loading sub-counties...');
+            $.get('@Url.Action("GetSubCountiesForCounty", "Management")', { countyId: @county?.CountyId }, function (data) {
+                hidePreloader();
+                var html = '';
+                if (data && data.length > 0) {
+                    data.forEach(function (subCounty) {
+                        html += `
+                                                <div class="card mb-2">
+                                                    <div class="card-body">
+                                                        <div class="row align-items-center">
+                                                            <div class="col-md-6">
+                                                                <h6 class="mb-0">${subCounty.subCountyName}</h6>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <span class="badge bg-info">${subCounty.locationsCount} Locations</span>
+                                                            </div>
+                                                            <div class="col-md-3 text-end">
+                                                                <button class="btn btn-sm btn-outline-primary me-1" onclick="editSubCounty(${subCounty.subCountyId})">
+                                                                    <i class="fas fa-edit"></i>
+                                                                </button>
+                                                                <button class="btn btn-sm btn-outline-danger" onclick="deleteSubCounty(${subCounty.subCountyId})">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            `;
+                    });
+                } else {
+                    html = '<p class="text-muted">No sub-counties found. Add the first one!</p>';
+                }
+                $('#subCountiesList').html(html);
+            }).fail(function () {
+                hidePreloader();
+                $('#subCountiesList').html('<p class="text-danger">Error loading sub-counties. Please try again.</p>');
+            });
+        }
+
+        function loadLocations() {
+            showPreloader('Loading locations...');
+            $.get('@Url.Action("GetLocationsForCounty", "Management")', { countyId: @county?.CountyId }, function (data) {
+                hidePreloader();
+                var html = '';
+                if (data && data.length > 0) {
+                    data.forEach(function (location) {
+                        html += `
+                                                <div class="card mb-2">
+                                                    <div class="card-body">
+                                                        <div class="row align-items-center">
+                                                            <div class="col-md-4">
+                                                                <h6 class="mb-0">${location.locationName}</h6>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <small class="text-muted">${location.subCountyName}</small>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <span class="badge bg-info">${location.subLocationsCount} Sub-Locations</span>
+                                                            </div>
+                                                            <div class="col-md-2 text-end">
+                                                                <button class="btn btn-sm btn-outline-primary me-1" onclick="editLocation(${location.locationId})">
+                                                                    <i class="fas fa-edit"></i>
+                                                                </button>
+                                                                <button class="btn btn-sm btn-outline-danger" onclick="deleteLocation(${location.locationId})">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            `;
+                    });
+                } else {
+                    html = '<p class="text-muted">No locations found. Add the first one!</p>';
+                }
+                $('#locationsList').html(html);
+            }).fail(function () {
+                hidePreloader();
+                $('#locationsList').html('<p class="text-danger">Error loading locations. Please try again.</p>');
+            });
+        }
+
+        function loadSubLocations() {
+            showPreloader('Loading sub-locations...');
+            $.get('@Url.Action("GetSubLocationsForCounty", "Management")', { countyId: @county?.CountyId }, function (data) {
+                hidePreloader();
+                var html = '';
+                if (data && data.length > 0) {
+                    data.forEach(function (subLocation) {
+                        html += `
+                                                <div class="card mb-2">
+                                                    <div class="card-body">
+                                                        <div class="row align-items-center">
+                                                            <div class="col-md-3">
+                                                                <h6 class="mb-0">${subLocation.subLocationName}</h6>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <small class="text-muted">${subLocation.locationName}</small>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <small class="text-muted">${subLocation.subCountyName}</small>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <span class="badge bg-info">${subLocation.villagesCount} Villages</span>
+                                                            </div>
+                                                            <div class="col-md-1 text-end">
+                                                                <button class="btn btn-sm btn-outline-primary me-1" onclick="editSubLocation(${subLocation.subLocationId})">
+                                                                    <i class="fas fa-edit"></i>
+                                                                </button>
+                                                                <button class="btn btn-sm btn-outline-danger" onclick="deleteSubLocation(${subLocation.subLocationId})">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            `;
+                    });
+                } else {
+                    html = '<p class="text-muted">No sub-locations found. Add the first one!</p>';
+                }
+                $('#subLocationsList').html(html);
+            }).fail(function () {
+                hidePreloader();
+                $('#subLocationsList').html('<p class="text-danger">Error loading sub-locations. Please try again.</p>');
+            });
+        }
+
+        function loadVillages() {
+            showPreloader('Loading villages...');
+            $.get('@Url.Action("GetVillagesForCounty", "Management")', { countyId: @county?.CountyId }, function (data) {
+                hidePreloader();
+                var html = '';
+                if (data && data.length > 0) {
+                    data.forEach(function (village) {
+                        html += `
+                                                <div class="card mb-2">
+                                                    <div class="card-body">
+                                                        <div class="row align-items-center">
+                                                            <div class="col-md-3">
+                                                                <h6 class="mb-0">${village.villageName}</h6>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <small class="text-muted">${village.subLocationName}</small>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <small class="text-muted">${village.locationName}</small>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <small class="text-muted">${village.subCountyName}</small>
+                                                            </div>
+                                                            <div class="col-md-1 text-end">
+                                                                <button class="btn btn-sm btn-outline-primary me-1" onclick="editVillage(${village.villageId})">
+                                                                    <i class="fas fa-edit"></i>
+                                                                </button>
+                                                                <button class="btn btn-sm btn-outline-danger" onclick="deleteVillage(${village.villageId})">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            `;
+                    });
+                } else {
+                    html = '<p class="text-muted">No villages found. Add the first one!</p>';
+                }
+                $('#villagesList').html(html);
+            }).fail(function () {
+                hidePreloader();
+                $('#villagesList').html('<p class="text-danger">Error loading villages. Please try again.</p>');
+            });
+        }
+
+        function showAddSubCountyModal() {
+            $('#addSubCountyModal').modal('show');
+        }
+
+        function showAddLocationModal() {
+            // Load sub-counties for the dropdown
+            $.get('@Url.Action("GetSubCountiesForCounty", "Management")', { countyId: @county?.CountyId }, function (data) {
+                var options = '<option value="">-- Select Sub-County --</option>';
+                data.forEach(function (subCounty) {
+                    options += `<option value="${subCounty.subCountyId}">${subCounty.subCountyName}</option>`;
+                });
+                $('#subCountySelect').html(options);
+            });
+            $('#addLocationModal').modal('show');
+        }
+
+        function showAddSubLocationModal() {
+            // Load locations for the dropdown
+            $.get('@Url.Action("GetLocationsForCounty", "Management")', { countyId: @county?.CountyId }, function (data) {
+                var options = '<option value="">-- Select Location --</option>';
+                data.forEach(function (location) {
+                    options += `<option value="${location.locationId}">${location.locationName} (${location.subCountyName})</option>`;
+                });
+                $('#locationSelect').html(options);
+            });
+            $('#addSubLocationModal').modal('show');
+        }
+
+        function showAddVillageModal() {
+            // Load sub-locations for the dropdown
+            $.get('@Url.Action("GetSubLocationsForCounty", "Management")', { countyId: @county?.CountyId }, function (data) {
+                var options = '<option value="">-- Select Sub-Location --</option>';
+                data.forEach(function (subLocation) {
+                    options += `<option value="${subLocation.subLocationId}">${subLocation.subLocationName} (${subLocation.locationName})</option>`;
+                });
+                $('#subLocationSelect').html(options);
+            });
+            $('#addVillageModal').modal('show');
+        }
+
+        // Form submissions
+        $('#addSubCountyForm').on('submit', function (e) {
+            e.preventDefault();
+            var formData = {
+                SubCountyName: $('#subCountyName').val(),
+                CountyId: parseInt($('#countyId').val())
+            };
+
+            console.log('Submitting sub-county data:', formData);
+            showPreloader('Creating sub-county...');
+            $.ajax({
+                url: '@Url.Action("CreateSubCounty", "Management")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function (response) {
+                    console.log('Sub-county creation response:', response);
+                    hidePreloader();
+                    if (response.success) {
+                        $('#addSubCountyModal').modal('hide');
+                        loadSubCounties();
+                        $('#addSubCountyForm')[0].reset();
+                        showSuccessMessage('Sub-county created successfully!');
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Sub-county creation error:', xhr.responseText);
+                    hidePreloader();
+                    alert('An error occurred while creating the sub-county: ' + error);
+                }
+            });
+        });
+
+        $('#addLocationForm').on('submit', function (e) {
+            e.preventDefault();
+            var formData = {
+                LocationName: $('#locationName').val(),
+                SubCountyId: parseInt($('#subCountySelect').val())
+            };
+
+            console.log('Submitting location data:', formData);
+            showPreloader('Creating location...');
+            $.ajax({
+                url: '@Url.Action("CreateLocation", "Management")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function (response) {
+                    console.log('Location creation response:', response);
+                    hidePreloader();
+                    if (response.success) {
+                        $('#addLocationModal').modal('hide');
+                        loadLocations();
+                        $('#addLocationForm')[0].reset();
+                        showSuccessMessage('Location created successfully!');
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Location creation error:', xhr.responseText);
+                    hidePreloader();
+                    alert('An error occurred while creating the location: ' + error);
+                }
+            });
+        });
+
+        $('#addSubLocationForm').on('submit', function (e) {
+            e.preventDefault();
+            var formData = {
+                SubLocationName: $('#subLocationName').val(),
+                LocationId: parseInt($('#locationSelect').val())
+            };
+
+            console.log('Submitting sub-location data:', formData);
+            showPreloader('Creating sub-location...');
+            $.ajax({
+                url: '@Url.Action("CreateSubLocation", "Management")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function (response) {
+                    console.log('Sub-location creation response:', response);
+                    hidePreloader();
+                    if (response.success) {
+                        $('#addSubLocationModal').modal('hide');
+                        loadSubLocations();
+                        $('#addSubLocationForm')[0].reset();
+                        showSuccessMessage('Sub-location created successfully!');
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Sub-location creation error:', xhr.responseText);
+                    hidePreloader();
+                    alert('An error occurred while creating the sub-location: ' + error);
+                }
+            });
+        });
+
+        $('#addVillageForm').on('submit', function (e) {
+            e.preventDefault();
+            var formData = {
+                VillageName: $('#villageName').val(),
+                SubCountyId: parseInt($('#subLocationSelect').val()) // Using SubCountyId as SubLocationId for now
+            };
+
+            console.log('Submitting village data:', formData);
+            showPreloader('Creating village...');
+            $.ajax({
+                url: '@Url.Action("CreateVillageAjax", "Management")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function (response) {
+                    console.log('Village creation response:', response);
+                    hidePreloader();
+                    if (response.success) {
+                        $('#addVillageModal').modal('hide');
+                        loadVillages();
+                        $('#addVillageForm')[0].reset();
+                        showSuccessMessage('Village created successfully!');
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Village creation error:', xhr.responseText);
+                    hidePreloader();
+                    alert('An error occurred while creating the village: ' + error);
+                }
+            });
+        });
+    </script>
+}
+
+<style>
+    .preloader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .preloader-content {
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .preloader-text {
+        margin-top: 1rem;
+        font-weight: 500;
+        color: #6c757d;
+    }
+
+    .spinner-border {
+        width: 3rem;
+        height: 3rem;
+    }
+
+    /* Disable interactions when preloader is active */
+    body.preloader-active {
+        pointer-events: none;
+    }
+
+    body.preloader-active * {
+        pointer-events: none !important;
+    }
+</style>

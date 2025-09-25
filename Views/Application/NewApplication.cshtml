@@ -1,0 +1,250 @@
+@model SAIS.Models.DTOs.ApplicationCreateDto
+
+@{
+    ViewData["Title"] = "Quick Application";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Quick Application</h2>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left"></i> Back to List
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Quick Application Entry</h5>
+                <p class="card-text text-muted mb-0">Enter applicant ID number to start a new application</p>
+            </div>
+            <div class="card-body">
+                <form asp-action="NewApplication" id="quickApplicationForm">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                    <!-- ID Number Lookup -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h6 class="text-primary border-bottom pb-2">Applicant Lookup</h6>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group mb-3">
+                                <label for="idNumber" class="form-label">
+                                    Applicant ID Number <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" id="idNumber" name="idNumber" class="form-control"
+                                    placeholder="Enter applicant ID number" autofocus />
+                                <div class="form-text">Enter the ID number to look up the applicant</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button type="button" id="lookupApplicant" class="btn btn-outline-primary">
+                                <i class="fas fa-search"></i> Lookup
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Applicant Info Display -->
+                    <div id="applicantInfo" class="alert alert-info" style="display: none;">
+                        <h6>Applicant Found:</h6>
+                        <div id="applicantDetails"></div>
+                    </div>
+
+                    <div id="applicantNotFound" class="alert alert-warning" style="display: none;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        No applicant found with this ID number. Please create the applicant first.
+                        <a asp-controller="Applicant" asp-action="Create" class="btn btn-sm btn-primary ms-2">
+                            <i class="fas fa-plus"></i> Create Applicant
+                        </a>
+                    </div>
+
+                    <!-- Application Details -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h6 class="text-primary border-bottom pb-2 mt-4">Application Details</h6>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="OfficerId" class="form-label">
+                                    Officer <span class="text-danger">*</span>
+                                </label>
+                                <select asp-for="OfficerId" class="form-select" asp-items="ViewBag.OfficerId">
+                                    <option value="">-- Select Officer --</option>
+                                </select>
+                                <span asp-validation-for="OfficerId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="ApplicationDate" class="form-label">
+                                    Application Date <span class="text-danger">*</span>
+                                </label>
+                                <input asp-for="ApplicationDate" type="date" class="form-control" />
+                                <span asp-validation-for="ApplicationDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="ApplicantSignedDate" class="form-label">
+                                    Applicant Signed Date <span class="text-danger">*</span>
+                                </label>
+                                <input asp-for="ApplicantSignedDate" type="date" class="form-control" />
+                                <span asp-validation-for="ApplicantSignedDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="OfficerSignedDate" class="form-label">
+                                    Officer Signed Date <span class="text-danger">*</span>
+                                </label>
+                                <input asp-for="OfficerSignedDate" type="date" class="form-control" />
+                                <span asp-validation-for="OfficerSignedDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Programs Selection -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h6 class="text-primary border-bottom pb-2 mt-4">Programs</h6>
+                            <p class="text-muted">Select one or more social assistance programs for this application.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group mb-3">
+                                @if (ViewBag.Programs != null)
+                                {
+                                    <div class="row">
+                                        @foreach (var program in (ViewBag.Programs as
+                                                                            List<SAIS.Models.SocialAssistanceProgram>)!)
+                                        {
+                                            <div class="col-md-6 col-lg-4 mb-2">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="ProgramIds"
+                                                        value="@program.ProgramId" id="program_@program.ProgramId"
+                                                        @(Model.ProgramIds.Contains(program.ProgramId) ? "checked" : "")>
+                                                    <label class="form-check-label" for="program_@program.ProgramId">
+                                                        @program.ProgramName
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                                <span class="text-danger" id="programsError"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-4">
+                        <button type="submit" class="btn btn-success" id="submitButton" disabled>
+                            <i class="fas fa-save"></i> Create Application
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function () {
+            // Set default application date to today
+            var today = new Date().toISOString().split('T')[0];
+            $('#ApplicationDate').val(today);
+
+            // Lookup applicant when button is clicked or Enter is pressed
+            $('#lookupApplicant').click(function () {
+                lookupApplicant();
+            });
+
+            $('#idNumber').keypress(function (e) {
+                if (e.which === 13) { // Enter key
+                    e.preventDefault();
+                    lookupApplicant();
+                }
+            });
+
+            // Form validation
+            $('#quickApplicationForm').submit(function (e) {
+                var isValid = true;
+
+                // Check if applicant was found
+                if ($('#applicantInfo').is(':hidden')) {
+                    alert('Please lookup and verify the applicant first.');
+                    isValid = false;
+                }
+
+                // Check if at least one program is selected
+                var selectedPrograms = $('input[name="selectedPrograms"]:checked');
+                if (selectedPrograms.length === 0) {
+                    $('#programsError').text('Please select at least one program.');
+                    isValid = false;
+                } else {
+                    $('#programsError').text('');
+                }
+
+                if (!isValid) {
+                    e.preventDefault();
+                }
+            });
+
+            // Clear program error when a program is selected
+            $('input[name="selectedPrograms"]').change(function () {
+                $('#programsError').text('');
+            });
+        });
+
+        function lookupApplicant() {
+            var idNumber = $('#idNumber').val().trim();
+
+            if (!idNumber) {
+                alert('Please enter an ID number.');
+                return;
+            }
+
+            $.get('@Url.Action("Lookup", "Applicant")', { idNumber: idNumber }, function (data) {
+                if (data.found) {
+                    // Display applicant information
+                    var details = '<strong>' + data.firstName + ' ' + data.lastName + '</strong><br>' +
+                        'ID: ' + data.idNumber + '<br>' +
+                        'Gender: ' + data.genderName + '<br>' +
+                        'Marital Status: ' + data.maritalStatusName + '<br>' +
+                        'Village: ' + data.villageName;
+
+                    $('#applicantDetails').html(details);
+                    $('#applicantInfo').show();
+                    $('#applicantNotFound').hide();
+                    $('#submitButton').prop('disabled', false);
+                } else {
+                    // Show not found message
+                    $('#applicantInfo').hide();
+                    $('#applicantNotFound').show();
+                    $('#submitButton').prop('disabled', true);
+                }
+            }).fail(function () {
+                alert('Error looking up applicant. Please try again.');
+            });
+        }
+    </script>
+}

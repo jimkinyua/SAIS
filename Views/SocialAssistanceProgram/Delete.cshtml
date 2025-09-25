@@ -1,0 +1,93 @@
+@model SAIS.Models.SocialAssistanceProgram
+
+@{
+    ViewData["Title"] = "Delete Program";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-danger">Delete Program</h2>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left"></i> Back to List
+    </a>
+</div>
+
+<div class="alert alert-warning" role="alert">
+    <i class="fas fa-exclamation-triangle"></i>
+    <strong>Warning!</strong> Are you sure you want to delete this program? This action cannot be undone.
+    @if (Model.AppliedPrograms.Any())
+    {
+            <br>
+    
+            <br>
+            <text>This program has @Model.AppliedPrograms.Count application(s) associated with it. Deleting this program will also remove all associated applications.</text>
+    }
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Program Information</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-3">Program Name:</dt>
+                    <dd class="col-sm-9"><strong>@Html.DisplayFor(model => model.ProgramName)</strong></dd>
+                    
+                    <dt class="col-sm-3">Total Applications:</dt>
+                    <dd class="col-sm-9">
+                        <span class="badge bg-primary fs-6">@Model.AppliedPrograms.Count</span>
+                    </dd>
+                </dl>
+
+                @if (Model.AppliedPrograms.Any())
+                {
+                                <hr>
+                                <h6 class="text-danger">Associated Applications</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Application Date</th>
+                                                <th>Applicant</th>
+                                                <th>Officer</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var appliedProgram in Model.AppliedPrograms.Take(10))
+                                            {
+                                                            var application = appliedProgram.Application;
+                                                            <tr>
+                                                                <td>@application.ApplicationDate.ToString("dd/MM/yyyy")</td>
+                                                                <td>@application.Applicant.FirstName @application.Applicant.LastName</td>
+                                                                <td>@application.Officer.OfficerName</td>
+                                                            </tr>
+                                            }
+                                            @if (Model.AppliedPrograms.Count > 10)
+                                            {
+                                                            <tr>
+                                                                <td colspan="3" class="text-center text-muted">
+                                                                    ... and @(Model.AppliedPrograms.Count - 10) more applications
+                                                                </td>
+                                                            </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                }
+            </div>
+        </div>
+
+        <form asp-action="Delete" class="mt-4">
+            <input type="hidden" asp-for="ProgramId" />
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Delete Program
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

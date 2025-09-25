@@ -1,0 +1,203 @@
+@model dynamic
+
+@{
+    ViewData["Title"] = "Reports Dashboard";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Reports Dashboard</h2>
+</div>
+
+<!-- Summary Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">@Model.TotalApplications</h4>
+                        <p class="card-text">Total Applications</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-file-alt fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">@Model.CompletedApplications</h4>
+                        <p class="card-text">Completed</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-check-circle fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">@Model.PendingApplications</h4>
+                        <p class="card-text">Pending</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-clock fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">@Model.ApplicationsByProgram.Count</h4>
+                        <p class="card-text">Programs</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-hand-holding-heart fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <a asp-action="Applications" class="btn btn-outline-primary btn-lg w-100 mb-3">
+                            <i class="fas fa-list"></i><br>
+                            View All Applications
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a asp-action="Export" asp-route-format="excel" class="btn btn-outline-success btn-lg w-100 mb-3">
+                            <i class="fas fa-file-excel"></i><br>
+                            Export to Excel
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a asp-action="Export" asp-route-format="pdf" class="btn btn-outline-danger btn-lg w-100 mb-3">
+                            <i class="fas fa-file-pdf"></i><br>
+                            Export to PDF
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Applications by Program</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.ApplicationsByProgram.Count > 0)
+                {
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Program</th>
+                                        <th>Applications</th>
+                                        <th>Percentage</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.ApplicationsByProgram)
+                                    {
+                                            var percentage = Model.TotalApplications > 0 ? (item.Count * 100.0 / Model.TotalApplications) : 0;
+                                            <tr>
+                                                <td>@item.Program</td>
+                                                <td>
+                                                    <span class="badge bg-primary">@item.Count</span>
+                                                </td>
+                                                <td>
+                                                    <div class="progress" style="height: 20px;">
+                                                        <div class="progress-bar" role="progressbar" style="width: @percentage%">
+                                                            @percentage.ToString("F1")%
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                }
+                else
+                {
+                        <p class="text-muted text-center">No data available</p>
+                }
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Applications by Officer</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.ApplicationsByOfficer.Count > 0)
+                {
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Officer</th>
+                                        <th>Applications</th>
+                                        <th>Percentage</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.ApplicationsByOfficer)
+                                    {
+                                            var percentage = Model.TotalApplications > 0 ? (item.Count * 100.0 / Model.TotalApplications) : 0;
+                                            <tr>
+                                                <td>@item.Officer</td>
+                                                <td>
+                                                    <span class="badge bg-info">@item.Count</span>
+                                                </td>
+                                                <td>
+                                                    <div class="progress" style="height: 20px;">
+                                                        <div class="progress-bar bg-info" role="progressbar" style="width: @percentage%">
+                                                            @percentage.ToString("F1")%
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                }
+                else
+                {
+                        <p class="text-muted text-center">No data available</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>

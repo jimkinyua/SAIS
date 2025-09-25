@@ -1,0 +1,50 @@
+@model SAIS.Models.SocialAssistanceProgram
+
+@{
+    ViewData["Title"] = "Create Program";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Create New Program</h2>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left"></i> Back to List
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Program Information</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                    
+                    <div class="form-group mb-3">
+                        <label asp-for="ProgramName" class="form-label">
+                            Program Name <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="ProgramName" class="form-control" autofocus />
+                        <span asp-validation-for="ProgramName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Create Program
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

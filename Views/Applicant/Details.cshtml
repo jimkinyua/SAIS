@@ -1,0 +1,185 @@
+@model SAIS.Models.DTOs.ApplicantDto
+
+@{
+    ViewData["Title"] = "Applicant Details";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Applicant Details</h2>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.ApplicantId" class="btn btn-warning">
+            <i class="fas fa-edit"></i> Edit
+        </a>
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Back to List
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Personal Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <dl class="row">
+                            <dt class="col-sm-4">ID Number:</dt>
+                            <dd class="col-sm-8"><strong>@Html.DisplayFor(model => model.IdNumber)</strong></dd>
+
+                            <dt class="col-sm-4">Name:</dt>
+                            <dd class="col-sm-8">
+                                @Html.DisplayFor(model => model.FirstName)
+                                @Html.DisplayFor(model => model.MiddleName)
+                                @Html.DisplayFor(model => model.LastName)
+                            </dd>
+
+                            <dt class="col-sm-4">Date of Birth:</dt>
+                            <dd class="col-sm-8">@Html.DisplayFor(model => model.DateOfBirth)</dd>
+
+                            <dt class="col-sm-4">Age:</dt>
+                            <dd class="col-sm-8">@Html.DisplayFor(model => model.Age)</dd>
+                        </dl>
+                    </div>
+                    <div class="col-md-6">
+                        <dl class="row">
+                            <dt class="col-sm-4">Gender:</dt>
+                            <dd class="col-sm-8">@Html.DisplayFor(model => model.GenderName)</dd>
+
+                            <dt class="col-sm-4">Marital Status:</dt>
+                            <dd class="col-sm-8">@Html.DisplayFor(model => model.MaritalStatusName)</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Geographic Information</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-3">Village:</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.VillageName)</dd>
+
+                    <dt class="col-sm-3">Sub Location:</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.SubLocationName)</dd>
+
+                    <dt class="col-sm-3">Location:</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.LocationName)</dd>
+
+                    <dt class="col-sm-3">Sub County:</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.SubCountyName)</dd>
+
+                    <dt class="col-sm-3">County:</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.CountyName)</dd>
+                </dl>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Address Information</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-3">Postal Address:</dt>
+                    <dd class="col-sm-9">
+                        @if (!string.IsNullOrEmpty(Model.PostalAddress))
+                        {
+                            @Html.DisplayFor(model => model.PostalAddress)
+                        }
+                        else
+                        {
+                            <span class="text-muted">Not provided</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-3">Physical Address:</dt>
+                    <dd class="col-sm-9">
+                        @if (!string.IsNullOrEmpty(Model.PhysicalAddress))
+                        {
+                            @Html.DisplayFor(model => model.PhysicalAddress)
+                        }
+                        else
+                        {
+                            <span class="text-muted">Not provided</span>
+                        }
+                    </dd>
+                </dl>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Phone Numbers</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.PhoneNumbers.Any())
+                {
+                    <ul class="list-unstyled">
+                        @foreach (var phone in Model.PhoneNumbers)
+                        {
+                            <li class="mb-2">
+                                <i class="fas fa-phone text-primary me-2"></i>
+                                @phone
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="text-muted">No phone numbers on record</p>
+                }
+            </div>
+        </div>
+
+        @if (Model.Applications.Any())
+        {
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Applications</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Application Date</th>
+                                    <th>Officer</th>
+                                    <th>Programs</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var application in Model.Applications)
+                                {
+                                    <tr>
+                                        <td>@application.ApplicationDate.ToString("dd/MM/yyyy")</td>
+                                        <td>@application.OfficerName</td>
+                                        <td>
+                                            @application.ProgramNames
+                                        </td>
+                                        <td>
+                                            @if (application.OfficerSignedDate != default(DateTime))
+                                            {
+                                                <span class="badge bg-success">Completed</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-warning">Pending</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

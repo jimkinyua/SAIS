@@ -1,0 +1,87 @@
+@model SAIS.Models.DTOs.ApplicationDetailsDto
+
+@{
+    ViewData["Title"] = "Delete Application";
+}
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="card-title mb-0">
+                        <i class="fas fa-exclamation-triangle"></i> Delete Application
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning" role="alert">
+                        <h5 class="alert-heading">Are you sure you want to delete this application?</h5>
+                        <p class="mb-0">This action cannot be undone. All data associated with this application will be
+                            permanently removed.</p>
+                    </div>
+
+                    <h6 class="text-primary border-bottom pb-2">Application Details</h6>
+                    <dl class="row">
+                        <dt class="col-sm-3">Application Date:</dt>
+                        <dd class="col-sm-9"><strong>@Model.ApplicationDate.ToString("dd/MM/yyyy")</strong></dd>
+
+                        <dt class="col-sm-3">Applicant Signed:</dt>
+                        <dd class="col-sm-9">@(Model.ApplicantSignedDate?.ToString("dd/MM/yyyy") ?? "Not signed")</dd>
+
+                        <dt class="col-sm-3">Officer Signed:</dt>
+                        <dd class="col-sm-9">@(Model.OfficerSignedDate?.ToString("dd/MM/yyyy") ?? "Not signed")</dd>
+
+                        <dt class="col-sm-3">Status:</dt>
+                        <dd class="col-sm-9">
+                            @if (Model.OfficerSignedDate.HasValue)
+                            {
+                                <span class="badge bg-success">Completed</span>
+                            }
+                            else if (Model.ApplicantSignedDate.HasValue)
+                            {
+                                <span class="badge bg-warning">Pending Officer</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Draft</span>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-3">Applicant:</dt>
+                        <dd class="col-sm-9">@Model.ApplicantName (@Model.ApplicantIdNumber)</dd>
+
+                        <dt class="col-sm-3">Officer:</dt>
+                        <dd class="col-sm-9">@Model.OfficerName - @Model.OfficerTitle</dd>
+
+                        <dt class="col-sm-3">Programs:</dt>
+                        <dd class="col-sm-9">
+                            @if (Model.Programs.Any())
+                            {
+                                @foreach (var program in Model.Programs)
+                                {
+                                    <span class="badge bg-primary me-1">@program.ProgramName</span>
+                                }
+                            }
+                            else
+                            {
+                                <span class="text-muted">No programs selected</span>
+                            }
+                        </dd>
+                    </dl>
+
+                    <form asp-action="Delete" method="post" class="mt-4">
+                        <input type="hidden" asp-for="ApplicationId" />
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Yes, Delete Application
+                            </button>
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

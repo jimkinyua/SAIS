@@ -1,0 +1,174 @@
+@{
+    ViewData["Title"] = "System Management";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-cogs text-primary"></i> System Management</h2>
+            </div>
+
+            <!-- Management Cards -->
+            <div class="row">
+                <!-- Counties Management -->
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <i class="fas fa-map-marker-alt fa-3x text-primary"></i>
+                            </div>
+                            <h5 class="card-title">Counties</h5>
+                            <p class="card-text">Manage counties and their sub-counties</p>
+                            <a href="@Url.Action("Counties")" class="btn btn-primary">
+                                <i class="fas fa-list"></i> Manage Counties
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Villages Management -->
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <i class="fas fa-home fa-3x text-success"></i>
+                            </div>
+                            <h5 class="card-title">Villages</h5>
+                            <p class="card-text">Manage villages and their locations</p>
+                            <a href="@Url.Action("Villages")" class="btn btn-success">
+                                <i class="fas fa-list"></i> Manage Villages
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gender Categories Management -->
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <i class="fas fa-venus-mars fa-3x text-info"></i>
+                            </div>
+                            <h5 class="card-title">Gender Categories</h5>
+                            <p class="card-text">Manage gender categories for applicants</p>
+                            <a href="@Url.Action("Genders")" class="btn btn-info">
+                                <i class="fas fa-list"></i> Manage Genders
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Marital Status Management -->
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <i class="fas fa-heart fa-3x text-warning"></i>
+                            </div>
+                            <h5 class="card-title">Marital Status</h5>
+                            <p class="card-text">Manage marital status options</p>
+                            <a href="@Url.Action("MaritalStatuses")" class="btn btn-warning">
+                                <i class="fas fa-list"></i> Manage Marital Status
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social Assistance Programs Management -->
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <i class="fas fa-hands-helping fa-3x text-danger"></i>
+                            </div>
+                            <h5 class="card-title">Social Programs</h5>
+                            <p class="card-text">Manage social assistance programs</p>
+                            <a href="@Url.Action("Index", "SocialAssistanceProgram")" class="btn btn-danger">
+                                <i class="fas fa-list"></i> Manage Programs
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Officers Management -->
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <i class="fas fa-user-tie fa-3x text-secondary"></i>
+                            </div>
+                            <h5 class="card-title">Officers</h5>
+                            <p class="card-text">Manage system officers</p>
+                            <a href="@Url.Action("Index", "Officer")" class="btn btn-secondary">
+                                <i class="fas fa-list"></i> Manage Officers
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-chart-bar"></i> System Overview</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row text-center">
+                                <div class="col-md-3">
+                                    <h4 class="text-primary" id="countiesCount">-</h4>
+                                    <p class="text-muted">Counties</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <h4 class="text-success" id="villagesCount">-</h4>
+                                    <p class="text-muted">Villages</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <h4 class="text-info" id="gendersCount">-</h4>
+                                    <p class="text-muted">Gender Categories</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <h4 class="text-warning" id="maritalStatusesCount">-</h4>
+                                    <p class="text-muted">Marital Statuses</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+            <script>
+                $(document).ready(function() {
+                    // Load quick stats
+                    loadQuickStats();
+                });
+
+                function loadQuickStats() {
+                    // Load counties count
+                    $.get('@Url.Action("GetCountiesCount")', function(data) {
+                        $('#countiesCount').text(data);
+                    });
+
+                    // Load villages count
+                    $.get('@Url.Action("GetVillagesCount")', function(data) {
+                        $('#villagesCount').text(data);
+                    });
+
+                    // Load genders count
+                    $.get('@Url.Action("GetGendersCount")', function(data) {
+                        $('#gendersCount').text(data);
+                    });
+
+                    // Load marital statuses count
+                    $.get('@Url.Action("GetMaritalStatusesCount")', function(data) {
+                        $('#maritalStatusesCount').text(data);
+                    });
+                }
+            </script>
+}

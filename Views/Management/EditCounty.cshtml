@@ -1,0 +1,57 @@
+@model SAIS.Models.DTOs.CountyEditDto
+
+@{
+    ViewData["Title"] = "Edit County";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-edit text-primary"></i> Edit County</h2>
+                <a href="@Url.Action("Counties")" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Counties
+                </a>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-map-marker-alt"></i> County Information</h5>
+                        </div>
+                        <div class="card-body">
+                            <form asp-action="EditCounty" method="post">
+                                <input asp-for="CountyId" type="hidden" />
+                                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                                <div class="mb-3">
+                                    <label asp-for="CountyName" class="form-label">
+                                        County Name <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="CountyName" class="form-control" placeholder="Enter county name" />
+                                    <span asp-validation-for="CountyName" class="text-danger"></span>
+                                </div>
+
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <a href="@Url.Action("Counties")" class="btn btn-secondary me-md-2">
+                                        <i class="fas fa-times"></i> Cancel
+                                    </a>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save"></i> Update County
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

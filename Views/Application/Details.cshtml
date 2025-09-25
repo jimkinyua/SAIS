@@ -1,0 +1,142 @@
+@model SAIS.Models.DTOs.ApplicationDetailsDto
+
+@{
+    ViewData["Title"] = "Application Details";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Application Information -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Application Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4">Application Date:</dt>
+                                <dd class="col-sm-8"><strong>@Model.ApplicationDate.ToString("dd/MM/yyyy")</strong></dd>
+                                
+                                <dt class="col-sm-4">Applicant Signed:</dt>
+                                <dd class="col-sm-8">@(Model.ApplicantSignedDate?.ToString("dd/MM/yyyy") ?? "Not signed")</dd>
+                                
+                                <dt class="col-sm-4">Officer Signed:</dt>
+                                <dd class="col-sm-8">@(Model.OfficerSignedDate?.ToString("dd/MM/yyyy") ?? "Not signed")</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4">Status:</dt>
+                                <dd class="col-sm-8">
+                                    @if (Model.OfficerSignedDate.HasValue)
+                                    {
+                                            <span class="badge bg-success">Completed</span>
+                                    }
+                                    else if (Model.ApplicantSignedDate.HasValue)
+                                    {
+                                            <span class="badge bg-warning">Pending Officer</span>
+                                    }
+                                    else
+                                    {
+                                            <span class="badge bg-secondary">Draft</span>
+                                    }
+                                </dd>
+                                
+                                <dt class="col-sm-4">Officer:</dt>
+                                <dd class="col-sm-8">@Model.OfficerName</dd>
+                                
+                                <dt class="col-sm-4">Officer Title:</dt>
+                                <dd class="col-sm-8">@Model.OfficerTitle</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Applicant Information -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Applicant Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4">ID Number:</dt>
+                                <dd class="col-sm-8"><strong>@Model.ApplicantIdNumber</strong></dd>
+                                
+                                <dt class="col-sm-4">Name:</dt>
+                                <dd class="col-sm-8">@Model.ApplicantName</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4">Phone:</dt>
+                                <dd class="col-sm-8">@Model.ApplicantPhone</dd>
+                                
+                                <dt class="col-sm-4">Address:</dt>
+                                <dd class="col-sm-8">@Model.ApplicantAddress</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Programs Information -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Selected Programs</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Programs.Any())
+                    {
+                            <div class="row">
+                                @foreach (var program in Model.Programs)
+                                {
+                                        <div class="col-md-6 col-lg-4 mb-2">
+                                            <div class="card border-primary">
+                                                <div class="card-body p-3">
+                                                    <h6 class="card-title text-primary">@program.ProgramName</h6>
+                                                    @if (!string.IsNullOrEmpty(program.Description))
+                                                    {
+                                                            <p class="card-text small text-muted">@program.Description</p>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                }
+                            </div>
+                    }
+                    else
+                    {
+                            <p class="text-muted">No programs selected for this application.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Actions -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-action="Edit" asp-route-id="@Model.ApplicationId" class="btn btn-primary">
+                            <i class="fas fa-edit"></i> Edit Application
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@Model.ApplicationId" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Delete Application
+                        </a>
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to List
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
