@@ -16,13 +16,11 @@ namespace SAIS.Controllers
             _context = context;
         }
 
-        // GET: Management
         public IActionResult Index()
         {
             return View();
         }
 
-        // GET: Management/Counties
         public async Task<IActionResult> Counties()
         {
             var counties = await _context.Counties
@@ -38,7 +36,6 @@ namespace SAIS.Controllers
             return View(counties);
         }
 
-        // GET: Management/Counties/Manage/5 - Hierarchical management for a county
         public async Task<IActionResult> ManageCounty(int? id)
         {
             if (id == null)

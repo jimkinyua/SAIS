@@ -65,7 +65,7 @@ dotnet run
 
 ### 4. Access the Application
 
-Navigate to `https://localhost:5001` in your browser.
+Navigate to Url generated in your browser.
 
 **Note**: The application will automatically use the appropriate configuration file based on the environment (Development/Production).
 

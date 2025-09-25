@@ -87,25 +87,6 @@ namespace SAIS.Controllers
             var maritalStatuses = await GetMaritalStatusesAsync();
             var counties = await GetCountiesAsync();
 
-            // Debug logging
-            System.Diagnostics.Debug.WriteLine($"=== CREATE GET DEBUG ===");
-            System.Diagnostics.Debug.WriteLine($"GenderCategories count: {genderCategories.Count}");
-            foreach (var g in genderCategories)
-            {
-                System.Diagnostics.Debug.WriteLine($"  Gender: {g.Value} - {g.Text}");
-            }
-            System.Diagnostics.Debug.WriteLine($"MaritalStatuses count: {maritalStatuses.Count}");
-            foreach (var m in maritalStatuses)
-            {
-                System.Diagnostics.Debug.WriteLine($"  MaritalStatus: {m.Value} - {m.Text}");
-            }
-            System.Diagnostics.Debug.WriteLine($"Counties count: {counties.Count}");
-            foreach (var c in counties)
-            {
-                System.Diagnostics.Debug.WriteLine($"  County: {c.Value} - {c.Text}");
-            }
-            System.Diagnostics.Debug.WriteLine($"=== END CREATE GET DEBUG ===");
-
             ViewData["GenderId"] = genderCategories;
             ViewData["MaritalStatusId"] = maritalStatuses;
             ViewData["CountyId"] = counties;
@@ -117,17 +98,8 @@ namespace SAIS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ApplicantCreateDto dto)
         {
-            // Debug logging
-            System.Diagnostics.Debug.WriteLine($"=== CREATE APPLICANT DEBUG ===");
-            System.Diagnostics.Debug.WriteLine($"GenderId: {dto.GenderId}");
-            System.Diagnostics.Debug.WriteLine($"MaritalStatusId: {dto.MaritalStatusId}");
-            System.Diagnostics.Debug.WriteLine($"VillageId: {dto.VillageId}");
-            System.Diagnostics.Debug.WriteLine($"IdNumber: {dto.IdNumber}");
-            System.Diagnostics.Debug.WriteLine($"FirstName: {dto.FirstName}");
-            System.Diagnostics.Debug.WriteLine($"LastName: {dto.LastName}");
 
-            // Log ModelState
-            System.Diagnostics.Debug.WriteLine($"ModelState.IsValid: {ModelState.IsValid}");
+
             foreach (var key in ModelState.Keys)
             {
                 var value = ModelState[key];
@@ -144,28 +116,6 @@ namespace SAIS.Controllers
                 }
             }
 
-            // Check what's actually in the database
-            var genderExists = await _context.GenderCategories.AnyAsync(g => g.GenderCategoryId == dto.GenderId);
-            var maritalStatusExists = await _context.MaritalStatuses.AnyAsync(m => m.MaritalStatusId == dto.MaritalStatusId);
-            var villageExists = await _context.Villages.AnyAsync(v => v.VillageId == dto.VillageId);
-
-            System.Diagnostics.Debug.WriteLine($"Gender exists: {genderExists}");
-            System.Diagnostics.Debug.WriteLine($"MaritalStatus exists: {maritalStatusExists}");
-            System.Diagnostics.Debug.WriteLine($"Village exists: {villageExists}");
-
-            // Log all GenderCategories in database
-            var allGenders = await _context.GenderCategories.ToListAsync();
-            System.Diagnostics.Debug.WriteLine($"All Genders in DB: {string.Join(", ", allGenders.Select(g => $"{g.GenderCategoryId}:{g.GenderCategoryName}"))}");
-
-            // Log all MaritalStatuses in database
-            var allMaritalStatuses = await _context.MaritalStatuses.ToListAsync();
-            System.Diagnostics.Debug.WriteLine($"All MaritalStatuses in DB: {string.Join(", ", allMaritalStatuses.Select(m => $"{m.MaritalStatusId}:{m.StatusName}"))}");
-
-            // Log all Villages in database
-            var allVillages = await _context.Villages.ToListAsync();
-            System.Diagnostics.Debug.WriteLine($"All Villages in DB: {string.Join(", ", allVillages.Select(v => $"{v.VillageId}:{v.VillageName}"))}");
-
-            System.Diagnostics.Debug.WriteLine($"=== END DEBUG ===");
 
             // Custom validation
             if (await _context.Applicants.AnyAsync(a => a.IdNumber == dto.IdNumber))
@@ -653,13 +603,7 @@ namespace SAIS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RegisterAndApply(CombinedApplicantApplicationDto dto)
         {
-            // Debug logging
-            System.Diagnostics.Debug.WriteLine($"=== REGISTER AND APPLY DEBUG ===");
-            System.Diagnostics.Debug.WriteLine($"FirstName: {dto.FirstName}");
-            System.Diagnostics.Debug.WriteLine($"LastName: {dto.LastName}");
-            System.Diagnostics.Debug.WriteLine($"IdNumber: {dto.IdNumber}");
-            System.Diagnostics.Debug.WriteLine($"ProgramIds: {string.Join(", ", dto.ProgramIds ?? new List<int>())}");
-            System.Diagnostics.Debug.WriteLine($"ModelState.IsValid: {ModelState.IsValid}");
+
 
             // Custom validation
             if (await _context.Applicants.AnyAsync(a => a.IdNumber == dto.IdNumber))

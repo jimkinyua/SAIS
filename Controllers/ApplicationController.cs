@@ -111,32 +111,6 @@ namespace SAIS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ApplicationCreateDto dto)
         {
-            // Debug logging
-            System.Diagnostics.Debug.WriteLine($"=== CREATE APPLICATION DEBUG ===");
-            System.Diagnostics.Debug.WriteLine($"ProgramIds: {string.Join(", ", dto.ProgramIds ?? new List<int>())}");
-            System.Diagnostics.Debug.WriteLine($"ProgramIds Count: {dto.ProgramIds?.Count ?? 0}");
-            System.Diagnostics.Debug.WriteLine($"ApplicantId: {dto.ApplicantId}");
-            System.Diagnostics.Debug.WriteLine($"OfficerId: {dto.OfficerId}");
-            System.Diagnostics.Debug.WriteLine($"ApplicationDate: {dto.ApplicationDate}");
-            System.Diagnostics.Debug.WriteLine($"ApplicantSignedDate: {dto.ApplicantSignedDate}");
-            System.Diagnostics.Debug.WriteLine($"OfficerSignedDate: {dto.OfficerSignedDate}");
-            System.Diagnostics.Debug.WriteLine($"ModelState.IsValid: {ModelState.IsValid}");
-            foreach (var key in ModelState.Keys)
-            {
-                var value = ModelState[key];
-                if (value != null)
-                {
-                    System.Diagnostics.Debug.WriteLine($"  {key}: {value.AttemptedValue ?? "null"} (Valid: {value.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Valid})");
-                    if (value.ValidationState != Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Valid)
-                    {
-                        foreach (var error in value.Errors)
-                        {
-                            System.Diagnostics.Debug.WriteLine($"    Error: {error.ErrorMessage}");
-                        }
-                    }
-                }
-            }
-            System.Diagnostics.Debug.WriteLine($"=== END DEBUG ===");
 
             // Custom validation
             if (dto.ProgramIds == null || dto.ProgramIds.Count == 0 || dto.ProgramIds.All(id => id == 0))
